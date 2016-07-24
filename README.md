@@ -3,9 +3,12 @@ In Pokemon GO, each Pokemon has hidden values that determine its maximum attaina
 
 While this app is relatively undetectable, if Niantic contacts me and requests that I discontinue development, I will comply. Until then, please be aware that you are using this at your own risk.
 
-![example](http://i.imgur.com/3V8xw1G.png)
+![example](http://i.imgur.com/7gUdFVR.png)
 
-# Host Setup
+## Host Setup
+
+## A Note About Windows
+Currently, it is very difficult to get this program working on Windows. Until a fully javascript implementation of protobuf can be utilized, Windows support will not be provided. For the time being, the recommended solution is Docker. If anyone would like to contribution documentation on how to get this project running flawlessly on Windows with Docker, please contact me.
 
 ### Mac OSX
 
@@ -16,41 +19,64 @@ brew install node
 brew install git
 brew install pkg-config
 brew install --devel protobuf
-npm install -g bower
+sudo npm install -g bower
+sudo npm install -g gulp
 git clone https://github.com/justinleewells/pogo-optimizer
 cd pogo-optimizer
 npm install
 bower install
-node index
+npm start
 ```
 
-### RPM-based Linux (Fedora, CentOS, RHEL)
+### Linux
 
-Run these commands:
+Run the commands below for your flavor of choice to get the necessary dependencies, [then see "Common"](#common) below for usage.
+
+#### RPM-based (Fedora, CentOS, RHEL)
 
 ```
 sudo dnf install nodejs protobuf protobuf-devel npm
 sudo npm install -g bower
+sudo npm install -g gulp
+```
+
+If your distribution is newer (e.g. F24+), npm is included with nodejs and you won't need both.
+
+#### Arch Linux
+
+```
+sudo pacman -S nodejs protobuf npm bower gulp
+```
+
+#### Deb based (Debian, Ubuntu, Raspbian, et al)
+
+For Debian stable, you'll need the latest node from sources:
+
+```
+sudo apt-get install -y curl build-essential libprotobuf-dev git pkg-config
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+sudo apt-get install nodejs
+```
+
+For Debian testing, you can just get nodejs from the repository:
+
+```
+sudo apt-get install -y build-essential libprotobuf-dev git pkg-config nodejs
+```
+
+#### Common
+
+After you install the necessary packages, all Linux flavors follow this routine:
+
+```
 git clone https://github.com/justinleewells/pogo-optimizer
 cd pogo-optimizer
 npm install
 bower install
-node index
+npm start
 ```
 
-### Arch Linux
-
-Run these commands:
-```
-sudo pacman -S nodejs protobuf npm bower
-git clone https://github.com/justinleewells/pogo-optimizer
-cd pogo-optimizer
-npm install
-bower install
-node index
-```
-
-Now you should have a webserver running. Make sure your phone and computer are connected to the same wireless network.
+This should launch the webserver on localhost:3000.
 
 ### Setup using Docker
 To install and setup everything using Docker, build the image in the root directory of this repository with:
@@ -98,14 +124,21 @@ If this website is not accessible on other devices in your network, then you hav
 
 ## Phone Setup
 
-Next, check your network settings for your internal ip address.
-If your host computer's IP is 10.0.1.3, you'll add 10.0.1.3:8081 as a proxy on your phone.
+Before proceeding to phone setup, you should have a webserver running on your host computer, and your phone and host computer
+should be connected to the same network.
+
+Check your host computer's network settings for your IP address.
+If your host computer's IP is 10.0.1.3, you'll visit http://10.0.1.3:3000 on your phone to view the pogo-optimizer application.
+Verify you can connect before continuing.
 
 Next, visit http://10.0.1.3:3000/ca.pem and install the certificate.
 
-After accepting the certificate, open Pokemon GO on your phone. After you can see your character walking around, go to localhost:3000 on your host machine. Enjoy.
+Then, add 10.0.1.3 port 8081 as a proxy for your WiFi connection on your phone.
 
-## iOS
+Lastly, after accepting the certificate and enabling the proxy, open Pokemon GO on your phone.
+After you can see your character walking around, go to http://localhost:3000 on your host machine. Enjoy!
+
+### iOS
 
 To set up a WiFi proxy on your iOS 9.0.0+ phone, follow these steps:
 
@@ -117,7 +150,7 @@ To set up a WiFi proxy on your iOS 9.0.0+ phone, follow these steps:
 
 ### Android
 
-If your Android doesn't understands ".pem" certificates you will have to convert it to a ".crt".
+If your Android phone doesn't understand ".pem" certificates you will have to convert it to a ".crt".
 Convert it with `openssl x509 -inform PEM -outform DER -in ca.pem -out ca.crt` on a system with openssl available.
 
 To set up a WiFi proxy on your Android 6.0.1+ phone, follow these steps:
@@ -135,13 +168,10 @@ There is currently a problem with some Android phones not accepting ca.pem or ca
 The only way I have found to solve this problem is to install OpenSSL on your PC/Mac and use the above command to create a ca.crt.
 Once created this needs transfering to the phone manually and then installed at Root acccess level. For this task I used [Root Certificate Manager](https://play.google.com/store/apps/details?id=net.jolivier.cert.Importer&hl=en_GB), this is quite easy, just launch the tool, it will ask for Super User prividges, accept them then use the browser to find your new ca.crt file.
 
-## A Note About Windows
-Currently, it is very difficult to get this program working on Windows. Until a fully javascript implementation of protobuf can be utilized, Windows support will not be provided. For the time being, the recommended solution is Docker. If anyone would like to contribution documentation on how to get this project running flawlessly on Windows with Docker, please contact me.
-
 ## TODO
 
-* Display more information (level, dust efficiency, optimal moves, etc)
-* Improve user experience
+* Implement dashboard
+* Implement lucky egg calculator
 * Utilize fully javascript protobuf implementation
 * Create Electron app
 
